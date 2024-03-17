@@ -1,0 +1,44 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /auth-service
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud: trace
+
+spring:
+  application:
+    name: auth-service
+
+  main:
+    banner-mode: off
+
+  config:
+    import: "optional:kubernetes:"
+  cloud:
+    kubernetes:
+      reload:
+        enabled: true
+        strategy: refresh
+      config:
+        fail-fast: true
+      secrets:
+        fail-fast: true
+
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate.globally_quoted_identifiers: true
+
+token:
+  signing:
+    key: 53A73E5F1C4E0A2D3B5F2D784E6A1B423D6F247D1F6E5C3A596D635A75327855
+  lifetimeInMinutes: 1

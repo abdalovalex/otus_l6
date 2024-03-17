@@ -1,0 +1,591 @@
+{
+	"info": {
+		"_postman_id": "8fe0883f-5c66-4e4e-9e3f-5b207215ac0b",
+		"name": "otus_l6",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Регистрация пользователя 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Регистрация пользователя 1\", function () {",
+							"    let actualData = pm.response.json();",
+							"",
+							"    pm.expect(pm.response.code).to.eq(201);",
+							"    pm.collectionVariables.set(\"idUserOne\", actualData.id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"username\", pm.variables.replaceIn('{{$randomUserName}}'))",
+							"pm.collectionVariables.set(\"password\", pm.variables.replaceIn('{{$randomPassword}}'))",
+							"pm.collectionVariables.set(\"email\", pm.variables.replaceIn('{{$randomEmail}}'))",
+							"pm.collectionVariables.set(\"firstName\", pm.variables.replaceIn('{{$randomFirstName}}'))",
+							"pm.collectionVariables.set(\"lastName\", pm.variables.replaceIn('{{$randomLastName}}'))       "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\",\n  \"email\": \"{{email}}\",\n  \"firstName\": \"{{firstName}}\",\n  \"lastName\": \"{{lastName}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth-service/auth/sign-up",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth-service",
+						"auth",
+						"sign-up"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Получение профиля пользователя 1 без авторизации",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Получение профиля пользователя 1 без авторизации\", function () {",
+							"    pm.expect(pm.response.code).to.eq(403);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/user-service/user/{{idUserOne}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user-service",
+						"user",
+						"{{idUserOne}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Изменение профиля пользователя 1 без авторизации",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Изменение профиля пользователя 1 без авторизации\", function () {",
+							"    pm.expect(pm.response.code).to.eq(403);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"phone\": \"{{$randomPhoneNumber}}\",\n  \"birthday\": \"2020-01-01\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user-service/user/{{idUserOne}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user-service",
+						"user",
+						"{{idUserOne}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Авторизация пользователя 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Авторизация пользователя 1\", function () {",
+							"    let actualData = pm.response.json();",
+							"",
+							"    pm.expect(pm.response.code).to.eq(200);",
+							"    pm.collectionVariables.set(\"token\", actualData.token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth-service/auth/sign-in",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth-service",
+						"auth",
+						"sign-in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Изменение профиля пользователя 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Изменение профиля пользователя 1\", function () {",
+							"    pm.expect(pm.response.code).to.eq(200);",
+							"    ",
+							"    let savedData = pm.request.body.raw;",
+							"    pm.collectionVariables.set(\"editUserOne\", savedData);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"phone\": \"{{$randomPhoneNumber}}\",\n  \"birthday\": \"2020-01-01\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user-service/user/{{idUserOne}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user-service",
+						"user",
+						"{{idUserOne}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Проверка изменения профиля пользователя 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Проверка изменения профиля пользователя 1\", function () {",
+							"    pm.expect(pm.response.code).to.eq(200);",
+							"    ",
+							"    let expectData = JSON.parse(pm.collectionVariables.get(\"editUserOne\"));",
+							"    let actualData = pm.response.json();",
+							"",
+							"    pm.expect(actualData.phone).to.eql(expectData.phone);",
+							"    pm.expect(actualData.birthday).to.eql(expectData.birthday);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/user-service/user/{{idUserOne}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user-service",
+						"user",
+						"{{idUserOne}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Выход пользователя 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Выход пользователя 1\", function () {",
+							"    pm.expect(pm.response.code).to.eq(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/auth-service/auth/logout",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth-service",
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Регистрация пользователя 2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"username\", pm.variables.replaceIn('{{$randomUserName}}'))",
+							"pm.collectionVariables.set(\"password\", pm.variables.replaceIn('{{$randomPassword}}'))",
+							"pm.collectionVariables.set(\"email\", pm.variables.replaceIn('{{$randomEmail}}'))",
+							"pm.collectionVariables.set(\"firstName\", pm.variables.replaceIn('{{$randomFirstName}}'))",
+							"pm.collectionVariables.set(\"lastName\", pm.variables.replaceIn('{{$randomLastName}}'))       "
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Регистрация пользователя 2\", function () {",
+							"    let actualData = pm.response.json();",
+							"",
+							"    pm.expect(pm.response.code).to.eq(201);",
+							"    pm.collectionVariables.set(\"idUserTwo\", actualData.id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"{{username}}\",\n  \"firstName\": \"{{firstName}}\",\n  \"lastName\": \"{{lastName}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth-service/auth/sign-up",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth-service",
+						"auth",
+						"sign-up"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Авторизация пользователя 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Авторизация пользователя 2\", function () {",
+							"    let actualData = pm.response.json();",
+							"",
+							"    pm.expect(pm.response.code).to.eq(200);",
+							"    pm.collectionVariables.set(\"token\", actualData.token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth-service/auth/sign-in",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth-service",
+						"auth",
+						"sign-in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Получение пользователем 2 профиля пользователя 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Получение пользователем 2 профиля пользователя 1\", function () {",
+							"    pm.expect(pm.response.code).to.eq(403);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/user-service/user/{{idUserOne}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user-service",
+						"user",
+						"{{idUserOne}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Изменение пользователем 2 профиля пользователя 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Изменение пользователем 2 профиля пользователя 1\", function () {",
+							"    pm.expect(pm.response.code).to.eq(403);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"phone\": \"{{$randomPhoneNumber}}\",\n  \"birthday\": \"2020-01-01\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user-service/user/{{idUserOne}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user-service",
+						"user",
+						"{{idUserOne}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://arch.homework",
+			"type": "default"
+		},
+		{
+			"key": "idUserOne",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "IdUserTwo",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "editUserOne",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "username",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "password",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "firstName",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "lastName",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "email",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
